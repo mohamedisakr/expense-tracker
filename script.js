@@ -6,21 +6,17 @@ const form = document.querySelector("#form");
 const textInput = document.querySelector("#text");
 const amountInput = document.querySelector("#amount");
 
-const dummyTransactions = [
-  { id: 1, text: "Flower", amount: -20 },
-  { id: 2, text: "Salary", amount: 300 },
-  { id: 3, text: "Book", amount: -10 },
-  { id: 4, text: "Camera", amount: 150 }
-];
+const localStorageTransactions = JSON.parse(
+  localStorage.getItem("transactions")
+);
 
-let transactions = dummyTransactions;
+let transactions =
+  localStorage.getItem("transactions") !== null ? localStorageTransactions : [];
 
 // Add transactions to history section list
 function addTransactions(transaction) {
-  //   const sign = transaction.amount < 0 ? "-" : "+";
   const listItem = document.createElement("li");
   listItem.classList.add(transaction.amount < 0 ? "minus" : "plus");
-  //   ${console.log(transaction.text.trim())}
   listItem.innerHTML = `
         ${transaction.text}        
         <span>$${transaction.amount}</span> 
@@ -30,7 +26,13 @@ function addTransactions(transaction) {
 
 function removeTransaction(id) {
   transactions = transactions.filter(transaction => transaction.id !== id);
+  upateLocalStorage();
   init();
+}
+
+// update local storage
+function upateLocalStorage() {
+  localStorage.setItem("transactions", JSON.stringify(transactions));
 }
 
 // upate balance (income & expense)
@@ -75,6 +77,7 @@ function handleSubmitForm(event) {
     transactions.push(transaction);
     addTransactions(transaction);
     upateValues();
+    upateLocalStorage();
     textInput.value = "";
     amountInput.value = "";
   }
@@ -87,3 +90,12 @@ function generateId() {
 init();
 
 form.addEventListener("submit", handleSubmitForm);
+
+/*
+const dummyTransactions = [
+  { id: 1, text: "Flower", amount: -20 },
+  { id: 2, text: "Salary", amount: 300 },
+  { id: 3, text: "Book", amount: -10 },
+  { id: 4, text: "Camera", amount: 150 }
+];
+*/
