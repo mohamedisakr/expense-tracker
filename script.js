@@ -3,8 +3,8 @@ const money_plus = document.querySelector("#money-plus");
 const money_minus = document.querySelector("#money-minus");
 const list = document.querySelector("#list");
 const form = document.querySelector("#form");
-const text = document.querySelector("#text");
-const amount = document.querySelector("#amount");
+const textInput = document.querySelector("#text");
+const amountInput = document.querySelector("#amount");
 
 const dummyTransactions = [
   { id: 1, text: "Flower", amount: -20 },
@@ -20,11 +20,17 @@ function addTransactions(transaction) {
   //   const sign = transaction.amount < 0 ? "-" : "+";
   const listItem = document.createElement("li");
   listItem.classList.add(transaction.amount < 0 ? "minus" : "plus");
+  //   ${console.log(transaction.text.trim())}
   listItem.innerHTML = `
-        ${transaction.text.trim()}
+        ${transaction.text}        
         <span>$${transaction.amount}</span> 
-        <button class="delete-btn">X</button>`;
+        <button class="delete-btn" onclick="removeTransaction(${transaction.id})">X</button>`;
   list.appendChild(listItem);
+}
+
+function removeTransaction(id) {
+  transactions = transactions.filter(transaction => transaction.id !== id);
+  init();
 }
 
 // upate balance (income & expense)
@@ -54,4 +60,30 @@ function init() {
   upateValues();
 }
 
+function handleSubmitForm(event) {
+  event.preventDefault();
+
+  if (textInput.value.trim() === "" || amountInput.value.trim() === "") {
+    alert("Please type a text and amount");
+  } else {
+    const transaction = {
+      id: generateId(),
+      text: textInput.value,
+      amount: Number(amountInput.value)
+    };
+    console.log(transaction);
+    transactions.push(transaction);
+    addTransactions(transaction);
+    upateValues();
+    textInput.value = "";
+    amountInput.value = "";
+  }
+}
+
+function generateId() {
+  return Math.floor(Math.random() * 100000000);
+}
+
 init();
+
+form.addEventListener("submit", handleSubmitForm);
