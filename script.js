@@ -1,3 +1,11 @@
+import {
+  generateId,
+  getTransactionAmount,
+  calculateSum,
+  getGreaterThanZero,
+  getLessThanZero
+} from "./utils.js";
+
 const balance = document.querySelector("#balance");
 const money_plus = document.querySelector("#money-plus");
 const money_minus = document.querySelector("#money-minus");
@@ -25,9 +33,14 @@ function addTransactions(transaction) {
 }
 
 function removeTransaction(id) {
-  transactions = transactions.filter(transaction => transaction.id !== id);
+  transactions = transactions.filter(getAllButNotCurrent);
   upateLocalStorage();
   init();
+
+  // ***************************
+  function getAllButNotCurrent(transaction) {
+    return transaction.id !== id;
+  }
 }
 
 // update local storage
@@ -37,18 +50,17 @@ function upateLocalStorage() {
 
 // upate balance (income & expense)
 function upateValues() {
-  const amounts = transactions.map(transaction => transaction.amount);
+  const amounts = transactions.map(getTransactionAmount);
 
-  const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+  const total = amounts.reduce(calculateSum).toFixed(2);
 
   const income = amounts
-    .filter(item => item > 0)
-    .reduce((acc, item) => (acc += item), 0)
+    .filter(getGreaterThanZero)
+    .reduce(calculateSum)
     .toFixed(2);
 
   const expenses = (
-    amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) *
-    -1
+    amounts.filter(getLessThanZero).reduce(calculateSum) * -1
   ).toFixed(2);
 
   balance.innerHTML = `$${total}`;
@@ -73,18 +85,15 @@ function handleSubmitForm(event) {
       text: textInput.value,
       amount: Number(amountInput.value)
     };
-    console.log(transaction);
+    // console.log(transaction);
     transactions.push(transaction);
     addTransactions(transaction);
     upateValues();
     upateLocalStorage();
+
     textInput.value = "";
     amountInput.value = "";
   }
-}
-
-function generateId() {
-  return Math.floor(Math.random() * 100000000);
 }
 
 init();

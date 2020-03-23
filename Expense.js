@@ -34,12 +34,12 @@ class Expenses {
 //   { amount: -50, desc: "Book" }
 // ];
 
-let myExpenses = new Expenses();
-// console.log(myExpenses._balance);
-myExpenses.setBalance(9000000);
-myExpenses.remove(2000000);
-const balance = myExpenses.getBalance();
-console.log(balance);
+// let myExpenses = new Expenses();
+// // console.log(myExpenses._balance);
+// myExpenses.setBalance(9000000);
+// myExpenses.remove(2000000);
+// const balance = myExpenses.getBalance();
+// console.log(balance);
 
 // let myExpenses = new Expenses(100000);
 // myExpenses.remove(20000);
